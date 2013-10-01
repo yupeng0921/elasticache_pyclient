@@ -3,6 +3,7 @@
 import telnetlib
 import re
 import inspect
+import new
 import hash_ring
 
 class InvalidConfigurationError(Exception):
@@ -54,14 +55,24 @@ class MemcacheClient():
         servers = []
         for node in self.cluster.nodes:
             servers.append(node.ip+':'+node.port)
-        self.memcache_ring = hash_ring.MemcacheRing(servers, *k, **kw)
+        self.ring = hash_ring.MemcacheRing(servers, *k, **kw)
         attrs = dir(hash_ring.MemcacheRing)
         methods = []
         for attr in attrs:
             if inspect.ismethod(getattr(hash_ring.MemcacheRing, attr)) and attr[0] != '_':
                 methods.append(attr)
-        print methods
+        for method in methods:
+            method_str = 'def ' + method + '(self, *k, **kw):\n' + \
+                '    return self.ring.' + method + '(*k, **kw)\n'
+            self.extends(method, method_str)
+
+    def extends(self, method_name, method_str):
+        #_method = None
+        exec method_str + '''\n_method = %s''' % method_name
+        self.__dict__[method_name] = new.instancemethod(_method, self, None)
 
 if __name__ == '__main__':
     server = 'mytest.lwgyhw.cfg.usw2.cache.amazonaws.com:11211'
     m = MemcacheClient(server)
+    m.set('xyz', 13)
+    print m.get('xyz')
