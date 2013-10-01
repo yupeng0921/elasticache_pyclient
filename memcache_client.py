@@ -4,11 +4,21 @@ import telnetlib
 import re
 import inspect
 import new
+import threading
 import hash_ring
 
 class InvalidConfigurationError(Exception):
     """
     receive configuration from endpoint is invalide
+    """
+    def __init__(self, msg):
+        self.msg = msg
+    def __str__(self):
+        return self.msg
+
+class GetLockError(Exception):
+    """
+    get lock failed, should not happend
     """
     def __init__(self, msg):
         self.msg = msg
@@ -56,15 +66,18 @@ class MemcacheClient():
         for node in self.cluster.nodes:
             servers.append(node.ip+':'+node.port)
         self.ring = hash_ring.MemcacheRing(servers, *k, **kw)
+        self.lock = threading.Lock()
         attrs = dir(hash_ring.MemcacheRing)
-        methods = []
         for attr in attrs:
             if inspect.ismethod(getattr(hash_ring.MemcacheRing, attr)) and attr[0] != '_':
-                methods.append(attr)
-        for method in methods:
-            method_str = 'def ' + method + '(self, *k, **kw):\n' + \
-                '    return self.ring.' + method + '(*k, **kw)\n'
-            self.extends(method, method_str)
+                method_str = 'def ' + attr + '(self, *k, **kw):\n' + \
+                    '    ret = self.lock.acquire(True)\n' + \
+                    '    if not ret:\n' + \
+                    '        raise GetLockError(' + attr + ')\n' + \
+                    '    ret = self.ring.' + attr + '(*k, **kw)\n' + \
+                    '    self.lock.release()\n' + \
+                    '    return ret'
+                self.extends(attr, method_str)
 
     def extends(self, method_name, method_str):
         #_method = None
@@ -74,5 +87,5 @@ class MemcacheClient():
 if __name__ == '__main__':
     server = 'mytest.lwgyhw.cfg.usw2.cache.amazonaws.com:11211'
     m = MemcacheClient(server)
-    m.set('xyz', 13)
+    # m.set('xyz', 14)
     print m.get('xyz')
