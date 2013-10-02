@@ -126,9 +126,6 @@ class MemcacheClient():
             self.need_update = True
             self.lock.release()
 
-    def start_timer(self):
-        self.timer.start()
-
     def stop_timer(self):
         self.timer.end()
 
