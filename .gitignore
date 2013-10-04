@@ -1,3 +1,4 @@
 *.pyc
 elasticache_pyclient.egg-info
 dist
+*.log
