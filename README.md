@@ -19,6 +19,6 @@ The python-memcached and hash_ring packages will also be installed automatically
 
 ## usage
 
-It support all the python-memcached methods, to examine all the python-memcached methods, you can run these commands in python interpreter:
+It support all the python-memcached methods, to examine all the python-memcached methods, you can run these commands in python interpreter:  
     >>> import memcache  
     >>> help(memcache.Client)  
