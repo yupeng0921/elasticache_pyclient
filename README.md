@@ -12,14 +12,13 @@ https://pypi.python.org/pypi/python-memcached
 https://pypi.python.org/pypi/hash_ring/
 
 ## install
+First, install python_memcached and hash_ring, elasticache_pyclient depend on them:
+
+    pip install python_memcached hash_ring
+
+Then, install elasticache_pyclient:
 
     pip install elasticache_pyclient
-
-or
-
-    python-pip install elasticache_pyclient
-
-The python-memcached and hash_ring packages will also be installed automatically
 
 ## usage
 
