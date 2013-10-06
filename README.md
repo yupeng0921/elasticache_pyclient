@@ -7,6 +7,7 @@ http://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/AutoDiscovery.html
 It uses python-memcached implements memcache command, and use hash_ring implements consistent hash, below links have more detail about python-memcached and hash_ring:
 
 https://pypi.python.org/pypi/python-memcached
+
 https://pypi.python.org/pypi/hash_ring/
 
 ## install
