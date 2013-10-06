@@ -347,6 +347,8 @@ if __name__ == '__main__':
         def run_all_test(self):
             self.run_test(self.new_server, self.new_name, None)
             self.run_test(self.old_server, self.old_name, None)
+            self.run_test(self.new_server, self.new_name, '/tmp/new.log')
+            self.run_test(self.old_server, self.old_name, '/tmp/old.log')
 
     if (len(sys.argv) == 5):
         new_server = sys.argv[1]
