@@ -98,12 +98,16 @@ class MemcacheClient():
 
         @param server: String
         something like: test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211
+
         @autodiscovery_timeout: Number
         Secondes for socket connection timeout when do autodiscovery
+
         @autodiscovery_interval: Number
         Seconds interval for check cluster status
+
         @client_debug: String
         A file name, if set, will write debug message to that file
+
         All Other parameters will be passed to python-memcached
         """
         self.server = server
@@ -340,6 +344,16 @@ if __name__ == '__main__':
             node_id = ret['DescribeCacheClustersResponse']['DescribeCacheClustersResult']['CacheClusters'][0]['CacheNodes'][0]['CacheNodeId']
             self.conn.modify_cache_cluster(name, num_cache_nodes=self.default_number, cache_node_ids_to_remove=[node_id], apply_immediately=True)
             time.sleep(10)
+
+            correct_count = 0
+            for i in range(0, total_count):
+                ret = m.get(str(i+total_count))
+                if ret:
+                    self.assertEquals(ret, i+total_count)
+                    correct_count += 1
+            print 'total: %d' % total_count
+            print 'correct: %d' % correct_count
+
             while True:
                 ret = self.conn.describe_cache_clusters(name)
                 status = ret['DescribeCacheClustersResponse']['DescribeCacheClustersResult']['CacheClusters'][0]['CacheClusterStatus']
@@ -360,6 +374,8 @@ if __name__ == '__main__':
             print 'total: %d' % total_count
             print 'correct: %d' % correct_count
             self.assertTrue(correct_count > total_count / 2)
+
+            m.flush_all()
 
             print 'completed'
 
