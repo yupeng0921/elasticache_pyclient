@@ -89,9 +89,25 @@ class Timer(threading.Thread):
         self.__running = False
 
 class MemcacheClient():
-    def __init__(self, server, auotdiscovery_timeout=10, autodiscovery_interval=60, client_debug=None, *k, **kw):
+    """
+    Do autodiscovery for elasticache memcache cluster.
+    """
+    def __init__(self, server, autodiscovery_timeout=10, autodiscovery_interval=60, client_debug=None, *k, **kw):
+        """
+        Create a new Client object, and launch a timer for the object.
+
+        @param server: String
+        something like: test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211
+        @autodiscovery_timeout: Number
+        Secondes for socket connection timeout when do autodiscovery
+        @autodiscovery_interval: Number
+        Seconds interval for check cluster status
+        @client_debug: String
+        A file name, if set, will write debug message to that file
+        All Other parameters will be passed to python-memcached
+        """
         self.server = server
-        self.auotdiscovery_timeout = auotdiscovery_timeout
+        self.autodiscovery_timeout = autodiscovery_timeout
 
         if client_debug:
             self.logger = logging.getLogger('memcache_client')
@@ -107,7 +123,7 @@ class MemcacheClient():
             debug_string = '\n'
             flush_string = '\n'
 
-        self.cluster = Cluster(server, auotdiscovery_timeout, self.logger)
+        self.cluster = Cluster(server, autodiscovery_timeout, self.logger)
         self.ring = hash_ring.MemcacheRing(self.cluster.servers, *k, **kw)
         self.need_update = False
         self.client_debug = client_debug
@@ -140,7 +156,7 @@ class MemcacheClient():
 
     def _update(self):
         try:
-            cluster = Cluster(self.server, self.auotdiscovery_timeout)
+            cluster = Cluster(self.server, self.autodiscovery_timeout)
         except Exception, e:
             if self.logger:
                 self.logger.debug(e)
@@ -159,6 +175,10 @@ class MemcacheClient():
             self.lock.release()
 
     def stop_timer(self):
+        """
+        If do not use the Client object anymore, you can call this function to stop the timer associate with
+        the object, or the timer will alwasy run.
+        """
         self.timer.end()
 
 if __name__ == '__main__':
