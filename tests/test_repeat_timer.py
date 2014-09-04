@@ -13,6 +13,7 @@ class TestRepeatTimer(unittest.TestCase):
     def test_run_timer(self):
         self.timer.start()
         time.sleep(3)
-        assert self.count >= 2
+        self.assertTrue(self.count >= 2)
+    def tearDown(self):
         self.timer.stop_timer()
         self.timer.join()
