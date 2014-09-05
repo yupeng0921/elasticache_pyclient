@@ -22,7 +22,11 @@ class RepeatTimer(Thread):
             try:
                 self.func(*self.args, **self.kwargs)
             except Exception, e:
-                msg = '%s %s failed' % (str(self.func), self.func.__name__)
+                if hasattr(self.func, '__name__'):
+                    func_name = self.func.__name__
+                else:
+                    func_name = ''
+                msg = '%s %s failed' % (str(self.func), func_name)
                 elasticache_logger.exception(msg)
                 if break_on_err:
                     break
