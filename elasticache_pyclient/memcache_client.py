@@ -5,7 +5,7 @@ from threading import Lock
 from types import MethodType
 from telnetlib import Telnet
 from distutils.version import StrictVersion
-import hash_ring
+from hash_ring import MemcacheRing
 from elasticache_pyclient import elasticache_logger
 from elasticache_pyclient.repeat_timer import RepeatTimer
 
@@ -85,7 +85,7 @@ class MemcacheClient():
         self.autodiscovery_timeout = autodiscovery_timeout
         elasticache_logger.debug('endpoint: %s' % endpoint)
         self.cluster = Cluster(endpoint, autodiscovery_timeout)
-        self.ring = hash_ring.MemcacheRing(self.cluster.servers, *args, **kwargs)
+        self.ring = MemcacheRing(self.cluster.servers, *args, **kwargs)
         self.need_update = False
         self.lock = Lock()
 
