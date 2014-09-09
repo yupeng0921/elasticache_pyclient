@@ -29,7 +29,10 @@ Then, install elasticache_pyclient:
     >>> mc.get('foo')
     'bar'
 
-It support all the python-memcached methods, to examine all the python-memcached methods, you can run these commands in python interpreter:
+Besides set and get, it supports all the python-memcached methods, to examine all the python-memcached methods, you can run these commands in python interpreter:
 
     import memcache
     help(memcache.Client)
+
+## version support
+The elasticache_pyclient package is tested on python 2.6 and 2.7. If anyone need python 3.0 support, please create an issue for me on the github project.
