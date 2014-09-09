@@ -3,7 +3,6 @@
 import logging
 
 __all__ = ['MemcacheClient', 'elasticache_logger']
-__version__ = "1.0.1"
 
 elasticache_logger = logging.getLogger('elasticache_logger')
 class NullHandler(logging.Handler):

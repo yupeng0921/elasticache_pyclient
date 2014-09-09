@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 PACKAGE = "elasticache_pyclient"
 NAME = "elasticache_pyclient"
 KEYWORDS = ("aws", "ealsticache")
-VERSION = __import__(PACKAGE).__version__
+VERSION = '2.0'
 DESCRIPTION = "pythone client for elasticache auto discovery"
 LICENSE = 'LGPL'
 URL = "https://github.com/yupeng820921/elasticache_pyclient"
