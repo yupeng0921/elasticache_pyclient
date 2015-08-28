@@ -29,7 +29,7 @@ class Cluster():
                                  str(host), str(type(host)),
                                  str(port), str(type(port)),
                                  str(timeout), str(type(timeout)))
-        tn = Telnet(host, port)
+        tn = Telnet(host, port, timeout)
         tn.write('version\n')
         ret = tn.read_until('\r\n', timeout)
         elasticache_logger.debug('version: %s', ret)
