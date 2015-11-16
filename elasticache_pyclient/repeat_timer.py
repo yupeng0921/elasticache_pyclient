@@ -21,7 +21,7 @@ class RepeatTimer(Thread):
                 break
             try:
                 self.func(*self.args, **self.kwargs)
-            except Exception, e:
+            except Exception as e:
                 if hasattr(self.func, '__name__'):
                     func_name = self.func.__name__
                 else:

@@ -110,7 +110,7 @@ class MemcacheClient():
     def _update(self):
         try:
             cluster = Cluster(self.endpoint, self.autodiscovery_timeout)
-        except Exception, e:
+        except Exception as e:
             elasticache_logger.debug(e)
             return
         if cluster.version != self.cluster.version:
