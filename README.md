@@ -12,11 +12,6 @@ https://pypi.python.org/pypi/python-memcached
 https://pypi.python.org/pypi/hash_ring/
 
 ## install
-First, install python_memcached and hash_ring, elasticache_pyclient depend on them:
-
-    pip install python_memcached hash_ring
-
-Then, install elasticache_pyclient:
 
     pip install elasticache_pyclient
 
@@ -33,6 +28,11 @@ Besides set and get, it supports all the python-memcached methods, to examine al
 
     import memcache
     help(memcache.Client)
+
+## stop atuo discovery timer
+Every MemcacheClient will start a timer for auto discovery, if do not use MemcacheClient object anymore, please call this funciton to stop the timer, or the timer will run forever
+
+    >>> mc.stop_timer()
 
 ## version support
 The elasticache_pyclient package is tested on python 2.7, 3.5 and 3.6.
