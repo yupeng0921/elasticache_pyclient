@@ -15,6 +15,7 @@ setup(
     version=VERSION,
     keywords=KEYWORDS,
     description=DESCRIPTION,
+    long_description=read('README.md'),
     license=LICENSE,
     url=URL,
     author=AUTHOR,
