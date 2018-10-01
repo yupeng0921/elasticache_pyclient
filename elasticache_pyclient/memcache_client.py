@@ -73,6 +73,10 @@ class Cluster():
                 self.servers = servers
                 self.version = version
                 self.timestamp = time.time()
+                logger.debug('cluster update: %s', self)
+
+    def __str__(self):
+        return '%d %s %f' % (self.version, self.servers, self.timestamp)
 
 
 class WrapperClient(threading.local):
@@ -83,6 +87,7 @@ class WrapperClient(threading.local):
             self.client = memcache.Client(
                 cluster.servers, *args, **kwargs)
             self.timestamp = time.time()
+            assert(self.timestamp > self.cluster.timestamp)
         self.args = args
         self.kwargs = kwargs
 
@@ -94,9 +99,12 @@ class WrapperClient(threading.local):
         def wrapper(self, *args, **kwargs):
             with self.cluster.lock:
                 if self.cluster.timestamp > self.timestamp:
+                    logger.info('cluster changed: %s', self.cluster)
                     self.client.disconnect_all()
-                    self.client = memcache.Client(*self.args, **self.kwargs)
+                    self.client = memcache.Client(
+                        self.cluster.servers, *self.args, **self.kwargs)
                     self.timestamp = time.time()
+                    assert(self.timestamp > self.cluster.timestamp)
             func = getattr(self.client, name)
             return func(*args, **kwargs)
 
