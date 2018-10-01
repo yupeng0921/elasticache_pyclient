@@ -16,7 +16,7 @@ class MemcacheClientTest(unittest.TestCase):
 
     def test_client(self):
         ecache_url = os.environ['ECACHE_URL']
-        size = os.environ.get('ECACHE_SIZE', 3)
+        size = int(os.environ.get('ECACHE_SIZE', '3'))
         mc = MemcacheClient(ecache_url)
         mc.set('foo', 'bar')
         self.assertEqual(mc.get('foo'), 'bar')
