@@ -163,3 +163,7 @@ class MemcacheClient(object):
         """
         self.timer.stop_timer()
         self.timer.join()
+
+    def cluster_size(self):
+        with self.cluster.lock:
+            return len(self.cluster.servers)
