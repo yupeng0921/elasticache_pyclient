@@ -15,7 +15,8 @@ class MemcacheClientTest(unittest.TestCase):
         pass
 
     def test_client(self):
-        ecache_url=os.environ['ECACHE_URL']
+        ecache_url = os.environ['ECACHE_URL']
         mc = MemcacheClient(ecache_url)
         mc.set('foo', 'bar')
         self.assertEqual(mc.get('foo'), 'bar')
+        mc.stop_timer()

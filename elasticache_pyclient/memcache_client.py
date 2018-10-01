@@ -10,6 +10,7 @@ import time
 
 import memcache
 from uhashring.monkey import patch_memcache
+from elasticache_pyclient.repeat_timer import RepeatTimer
 
 patch_memcache()
 
@@ -129,8 +130,11 @@ class MemcacheClient(object):
         self.endpoint = endpoint
         self.ad_timeout = ad_timeout
         cluster = Cluster(endpoint, ad_timeout)
+        self.cluster = cluster
         self.wc = WrapperClient(cluster, *args, **kwargs)
         self.lock = threading.Lock()
+        self.timer = RepeatTimer('autodiscovery', ad_interval, self._update)
+        self.timer.start()
 
     def __getattr__(self, name):
         if not hasattr(memcache.Client, name):
@@ -146,3 +150,16 @@ class MemcacheClient(object):
             method_func = MethodType(wrapper, self)
             setattr(self, name, method_func)
             return method_func
+
+    def _update(self):
+        self.cluster.update()
+
+    def stop_timer(self):
+        """
+        Every MemcacheClient will start a timer for auto discovery,
+        if do not use MemcacheClient object anymore,
+        please call this funciton to stop the timer,
+        or the timer will run forever
+        """
+        self.timer.stop_timer()
+        self.timer.join()
